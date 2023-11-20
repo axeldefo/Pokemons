@@ -1,0 +1,484 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API Pokémon",
+      "version": "1.0.0",
+      "description": "API pour la gestion des Pokémon"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "Authorization": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+      {
+        "Authorization": []
+      }
+    ],
+    "paths": {
+      "/api/v1/auth/register": {
+        "post": {
+          "summary": "Register a new user",
+          "description": "Register a new user.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "example": {
+                  "username": "user123",
+                  "password": "password123"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User registered successfully"
+            },
+            "400": {
+              "description": "Bad request, username already exists or missing fields"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/auth/login": {
+        "post": {
+          "summary": "Login user and get JWT token",
+          "description": "Login user and get JWT token.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "example": {
+                  "username": "user123",
+                  "password": "password123"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Login successful, returns JWT token"
+            },
+            "401": {
+              "description": "Unauthorized, invalid username or password"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/auth/refresh": {
+        "post": {
+          "summary": "Refresh Access Token",
+          "description": "Refresh the access token using a valid refresh token.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "example": {
+                  "refreshToken": "your_refresh_token_here"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success, returns a new access token",
+              "content": {
+                "application/json": {
+                  "example": {
+                    "accessToken": "your_new_access_token_here"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request, missing refresh token"
+            },
+            "401": {
+              "description": "Unauthorized, invalid refresh token"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },      
+      "/api/v1/pokemons": {
+        "get": {
+          "summary": "Get all Pokemon",
+          "description": "Retrieve a list of all Pokemon.",
+          "responses": {
+            "200": {
+              "description": "Success, returns a list of Pokemon"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/pagination": {
+        "get": {
+          "summary": "Get paginated Pokemon",
+          "description": "Retrieve a paginated list of Pokemon.",
+          "parameters": [
+            {
+              "name": "page",
+              "in": "query",
+              "description": "Page number",
+              "required": false,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns a paginated list of Pokemon"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/search": {
+        "get": {
+          "summary": "Search for Pokemon",
+          "description": "Search for Pokemon based on criteria.",
+          "parameters": [
+            {
+              "name": "nom",
+              "in": "query",
+              "description": "Pokemon name",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "description": "Types of Pokemon (comma-separated)",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "hp",
+              "in": "query",
+              "description": "Pokemon HP",
+              "required": false,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns search results"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/crud/": {
+        "post": {
+          "summary": "Create a new Pokemon",
+          "description": "Create a new Pokemon.",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "example": {
+                  "name": "Pikachu",
+                  "type": "Electric",
+                  "base": 55
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Pokemon created successfully"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "get": {
+          "summary": "Get all Pokemon (CRUD)",
+          "description": "Retrieve a list of all Pokemon (CRUD).",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns a list of Pokemon (CRUD)"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/crud/search": {
+        "get": {
+          "summary": "Search for Pokemon (CRUD)",
+          "description": "Search for Pokemon based on criteria (CRUD).",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "nom",
+              "in": "query",
+              "description": "Pokemon name",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "description": "Types of Pokemon (comma-separated)",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "hp",
+              "in": "query",
+              "description": "Pokemon HP",
+              "required": false,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns search results (CRUD)"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/crud/{id}": {
+        "get": {
+          "summary": "Get a Pokemon by ID (CRUD)",
+          "description": "Retrieve a Pokemon by ID (CRUD).",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Pokemon ID",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns a Pokemon (CRUD)"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "404": {
+              "description": "Pokemon not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "put": {
+          "summary": "Update a Pokemon by ID (CRUD)",
+          "description": "Update a Pokemon by ID (CRUD).",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Pokemon ID",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "example": {
+                  "name": "Pikachu",
+                  "type": "Electric",
+                  "base": 60
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success, returns the updated Pokemon (CRUD)"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "404": {
+              "description": "Pokemon not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a Pokemon by ID (CRUD)",
+          "description": "Delete a Pokemon by ID (CRUD).",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Pokemon ID",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns the deleted Pokemon (CRUD)"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "404": {
+              "description": "Pokemon not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/count": {
+        "get": {
+          "summary": "Get the count of Pokemon",
+          "description": "Retrieve the count of Pokemon.",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns the count of Pokemon"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/v1/pokemons/{id}": {
+        "get": {
+          "summary": "Get a Pokemon by ID",
+          "description": "Retrieve a Pokemon by ID.",
+          "security": [
+            {
+              "Authorization": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Pokemon ID",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success, returns a Pokemon"
+            },
+            "401": {
+              "description": "Unauthorized, invalid JWT token"
+            },
+            "404": {
+              "description": "Pokemon not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      }
+    }
+  }
+  
